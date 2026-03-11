@@ -1,10 +1,10 @@
 export type UserRole =
-  | "SUPER_ADMIN"
-  | "TENANT_ADMIN"
-  | "PROPERTY_MANAGER"
-  | "FRONT_DESK"
-  | "HOUSEKEEPING"
-  | "ACCOUNTANT";
+  | "super_admin"
+  | "tenant_admin"
+  | "property_manager"
+  | "front_desk"
+  | "housekeeping"
+  | "accountant";
 
 export interface PlanContext {
   name: string;
@@ -25,9 +25,22 @@ export interface LoginDto {
   password: string;
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface ApiResponse<T> {
   success: true;
   data: T;
+}
+
+export interface PaginatedApiResponse<T> {
+  success: true;
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export interface ApiErrorResponse {

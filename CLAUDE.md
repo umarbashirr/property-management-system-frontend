@@ -350,12 +350,33 @@ Access in code: `import.meta.env.VITE_API_URL`
   - [x] `src/features/auth/pages/LoginPage.tsx`
 - [x] `src/routes/ProtectedRoute.tsx`
 - [x] `src/routes/AppRouter.tsx`
-- [x] `src/providers/AppProviders.tsx`
+- [x] `src/providers/AppProviders.tsx` (+ Toaster added)
 - [x] `main.tsx` + `App.tsx` wired up
+- [x] Shared layout: `AppShell`, `Sidebar`, `Header` at `src/components/layout/`
+- [x] `src/routes/SuperAdminRoute.tsx` — role guard for SUPER_ADMIN
+- [x] `src/hooks/useDebounce.ts` — generic debounce hook
+- [x] Additional shadcn components: `table`, `dialog`, `dropdown-menu`, `select`, `tabs`, `badge`, `separator`, `sonner`
+- [x] Tenants module (super_admin only):
+  - [x] `src/features/tenants/types/tenants.types.ts`
+  - [x] `src/features/tenants/services/tenants.service.ts`
+  - [x] `src/features/tenants/hooks/useTenants.ts`
+  - [x] `src/features/tenants/hooks/useTenant.ts`
+  - [x] `src/features/tenants/hooks/useCreateTenant.ts`
+  - [x] `src/features/tenants/hooks/useUpdateTenant.ts`
+  - [x] `src/features/tenants/hooks/useDeleteTenant.ts`
+  - [x] `src/features/tenants/hooks/useTenantUsers.ts`
+  - [x] `src/features/tenants/components/StatusBadge.tsx`
+  - [x] `src/features/tenants/components/TenantFilters.tsx`
+  - [x] `src/features/tenants/components/TenantTable.tsx`
+  - [x] `src/features/tenants/components/DeleteTenantDialog.tsx`
+  - [x] `src/features/tenants/components/TenantForm.tsx`
+  - [x] `src/features/tenants/pages/TenantsPage.tsx` → `/super-admin/tenants`
+  - [x] `src/features/tenants/pages/CreateTenantPage.tsx` → `/super-admin/tenants/new`
+  - [x] `src/features/tenants/pages/TenantDetailPage.tsx` → `/super-admin/tenants/:id`
 
 ### 🚧 In Progress
 
-_(nothing — Login module complete)_
+_(nothing)_
 
 ### ❌ Not Started
 
@@ -368,6 +389,7 @@ _(nothing — Login module complete)_
 - [ ] Staff (Users) module
 - [ ] Housekeeping module
 - [ ] Reports module
+- [ ] Plans endpoint (GET /plans) — needed to replace planId text input with a dropdown in TenantForm
 
 ---
 
