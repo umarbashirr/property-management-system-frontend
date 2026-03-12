@@ -2,8 +2,10 @@ import { useState } from "react";
 import { NavLink } from "react-router";
 import {
   IconBuilding,
+  IconBuildingEstate,
   IconChevronLeft,
   IconChevronRight,
+  IconCreditCard,
   IconDashboard,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +24,18 @@ const navItems: NavItem[] = [
     href: "/dashboard",
     icon: <IconDashboard size={20} />,
     roles: ["super_admin", "tenant_admin", "property_manager", "front_desk", "housekeeping", "accountant"],
+  },
+  {
+    label: "Properties",
+    href: "/properties",
+    icon: <IconBuildingEstate size={20} />,
+    roles: ["super_admin", "tenant_admin"],
+  },
+  {
+    label: "Plans",
+    href: "/super-admin/plans",
+    icon: <IconCreditCard size={20} />,
+    roles: ["super_admin"],
   },
   {
     label: "Tenants",

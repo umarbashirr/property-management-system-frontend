@@ -373,6 +373,21 @@ Access in code: `import.meta.env.VITE_API_URL`
   - [x] `src/features/tenants/pages/TenantsPage.tsx` → `/super-admin/tenants`
   - [x] `src/features/tenants/pages/CreateTenantPage.tsx` → `/super-admin/tenants/new`
   - [x] `src/features/tenants/pages/TenantDetailPage.tsx` → `/super-admin/tenants/:id`
+- [x] Properties module (tenant_admin + super_admin):
+  - [x] `src/features/properties/types/properties.types.ts`
+  - [x] `src/features/properties/services/properties.service.ts`
+  - [x] `src/features/properties/hooks/useProperties.ts`
+  - [x] `src/features/properties/hooks/useProperty.ts`
+  - [x] `src/features/properties/hooks/useCreateProperty.ts`
+  - [x] `src/features/properties/hooks/useUpdateProperty.ts`
+  - [x] `src/features/properties/hooks/useDeleteProperty.ts`
+  - [x] `src/features/properties/components/PropertyFilters.tsx`
+  - [x] `src/features/properties/components/PropertyTable.tsx`
+  - [x] `src/features/properties/components/DeletePropertyDialog.tsx`
+  - [x] `src/features/properties/components/PropertyForm.tsx`
+  - [x] `src/features/properties/pages/PropertiesPage.tsx` → `/properties`
+  - [x] `src/features/properties/pages/CreatePropertyPage.tsx` → `/properties/new`
+  - [x] `src/features/properties/pages/PropertyDetailPage.tsx` → `/properties/:id`
 
 ### 🚧 In Progress
 
