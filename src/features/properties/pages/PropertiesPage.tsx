@@ -35,8 +35,8 @@ export function PropertiesPage() {
             Manage your hotel properties.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/properties/new" className="gap-2">
+        <Button asChild size="lg">
+          <Link to="/properties/new" className="flex items-center gap-2">
             <IconPlus size={16} />
             New property
           </Link>

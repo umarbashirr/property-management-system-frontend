@@ -35,9 +35,11 @@ export function PlansPage() {
             Manage subscription plans and their resource limits.
           </p>
         </div>
-        <Button render={<Link to="/super-admin/plans/new" />} className="gap-2">
-          <IconPlus size={16} />
-          New plan
+        <Button asChild size="lg">
+          <Link to="/super-admin/plans/new" className="flex items-center gap-2">
+            <IconPlus size={16} />
+            New plan
+          </Link>
         </Button>
       </div>
 

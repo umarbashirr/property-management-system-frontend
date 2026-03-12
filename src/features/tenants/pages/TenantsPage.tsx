@@ -35,8 +35,8 @@ export function TenantsPage() {
             Manage all tenants on the platform.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/super-admin/tenants/new" className="gap-2">
+        <Button asChild size="lg">
+          <Link to="/super-admin/tenants/new" className="flex items-center gap-2">
             <IconPlus size={16} />
             New tenant
           </Link>

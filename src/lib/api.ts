@@ -59,10 +59,9 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        // Refresh failed — clear auth state then redirect
+        // Refresh failed — clear auth state; ProtectedRoute handles redirect to /login
         useAuthStore.getState().clearUser();
         queryClient.clear();
-        window.location.href = "/login";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
