@@ -388,6 +388,79 @@ Access in code: `import.meta.env.VITE_API_URL`
   - [x] `src/features/properties/pages/PropertiesPage.tsx` → `/properties`
   - [x] `src/features/properties/pages/CreatePropertyPage.tsx` → `/properties/new`
   - [x] `src/features/properties/pages/PropertyDetailPage.tsx` → `/properties/:id`
+- [x] Room Types module (property-scoped, tenant_admin + super_admin):
+  - [x] `src/features/roomTypes/types/roomTypes.types.ts`
+  - [x] `src/features/roomTypes/services/roomTypes.service.ts`
+  - [x] `src/features/roomTypes/hooks/useRoomTypes.ts`
+  - [x] `src/features/roomTypes/hooks/useRoomType.ts`
+  - [x] `src/features/roomTypes/hooks/useCreateRoomType.ts`
+  - [x] `src/features/roomTypes/hooks/useUpdateRoomType.ts`
+  - [x] `src/features/roomTypes/hooks/useDeleteRoomType.ts`
+  - [x] `src/features/roomTypes/components/RoomTypeFilters.tsx`
+  - [x] `src/features/roomTypes/components/RoomTypeTable.tsx`
+  - [x] `src/features/roomTypes/components/DeleteRoomTypeDialog.tsx`
+  - [x] `src/features/roomTypes/components/RoomTypeForm.tsx`
+  - [x] `src/features/roomTypes/pages/RoomTypesPage.tsx` → `/properties/:propertyId/room-types`
+  - [x] `src/features/roomTypes/pages/CreateRoomTypePage.tsx` → `/properties/:propertyId/room-types/new`
+  - [x] `src/features/roomTypes/pages/RoomTypeDetailPage.tsx` → `/properties/:propertyId/room-types/:id`
+- [x] Rooms module (property-scoped, all staff roles):
+  - [x] `src/features/rooms/types/rooms.types.ts`
+  - [x] `src/features/rooms/services/rooms.service.ts`
+  - [x] `src/features/rooms/hooks/useRooms.ts`
+  - [x] `src/features/rooms/hooks/useRoom.ts`
+  - [x] `src/features/rooms/hooks/useCreateRoom.ts`
+  - [x] `src/features/rooms/hooks/useUpdateRoom.ts`
+  - [x] `src/features/rooms/hooks/useDeleteRoom.ts`
+  - [x] `src/features/rooms/hooks/useUpdateRoomStatus.ts`
+  - [x] `src/features/rooms/components/RoomStatusBadge.tsx`
+  - [x] `src/features/rooms/components/RoomFilters.tsx`
+  - [x] `src/features/rooms/components/RoomTable.tsx`
+  - [x] `src/features/rooms/components/DeleteRoomDialog.tsx`
+  - [x] `src/features/rooms/components/RoomForm.tsx`
+  - [x] `src/features/rooms/pages/RoomsPage.tsx` → `/properties/:propertyId/rooms`
+  - [x] `src/features/rooms/pages/CreateRoomPage.tsx` → `/properties/:propertyId/rooms/new`
+  - [x] `src/features/rooms/pages/RoomDetailPage.tsx` → `/properties/:propertyId/rooms/:id`
+- [x] Sidebar updated with property-scoped navigation (Room Types, Rooms appear when inside `/properties/:propertyId/...`)
+- [x] Staff (Users) module (tenant-scoped, tenant_admin + super_admin):
+  - [x] `src/features/users/types/users.types.ts`
+  - [x] `src/features/users/services/users.service.ts`
+  - [x] `src/features/users/hooks/useUsers.ts`
+  - [x] `src/features/users/hooks/useUser.ts`
+  - [x] `src/features/users/hooks/useCreateUser.ts`
+  - [x] `src/features/users/hooks/useUpdateUser.ts`
+  - [x] `src/features/users/hooks/useDeactivateUser.ts`
+  - [x] `src/features/users/hooks/useAssignProperty.ts`
+  - [x] `src/features/users/hooks/useRemovePropertyAssignment.ts`
+  - [x] `src/features/users/components/UserRoleBadge.tsx`
+  - [x] `src/features/users/components/UserTable.tsx`
+  - [x] `src/features/users/components/UserFilters.tsx`
+  - [x] `src/features/users/components/DeactivateUserDialog.tsx`
+  - [x] `src/features/users/components/UserForm.tsx`
+  - [x] `src/features/users/components/PropertyAssignments.tsx`
+  - [x] `src/features/users/pages/UsersPage.tsx` → `/users`
+  - [x] `src/features/users/pages/CreateUserPage.tsx` → `/users/new`
+  - [x] `src/features/users/pages/UserDetailPage.tsx` → `/users/:id`
+- [x] Sidebar updated with "Team" nav item for super_admin and tenant_admin
+- [x] Profiles (Guests) module (tenant-scoped, CRUD + VIP + blacklist):
+  - [x] `src/features/profiles/types/profiles.types.ts`
+  - [x] `src/features/profiles/services/profiles.service.ts`
+  - [x] `src/features/profiles/hooks/useProfiles.ts`
+  - [x] `src/features/profiles/hooks/useProfile.ts`
+  - [x] `src/features/profiles/hooks/useCreateProfile.ts`
+  - [x] `src/features/profiles/hooks/useUpdateProfile.ts`
+  - [x] `src/features/profiles/hooks/useDeleteProfile.ts`
+  - [x] `src/features/profiles/hooks/useSetBlacklist.ts`
+  - [x] `src/features/profiles/hooks/useSetVip.ts`
+  - [x] `src/features/profiles/components/ProfileTypeBadge.tsx`
+  - [x] `src/features/profiles/components/ProfileFilters.tsx`
+  - [x] `src/features/profiles/components/ProfileTable.tsx`
+  - [x] `src/features/profiles/components/DeleteProfileDialog.tsx`
+  - [x] `src/features/profiles/components/BlacklistDialog.tsx`
+  - [x] `src/features/profiles/components/ProfileForm.tsx`
+  - [x] `src/features/profiles/pages/ProfilesPage.tsx` → `/profiles`
+  - [x] `src/features/profiles/pages/CreateProfilePage.tsx` → `/profiles/new`
+  - [x] `src/features/profiles/pages/ProfileDetailPage.tsx` → `/profiles/:id`
+- [x] Sidebar updated with "Guests" nav item for super_admin, tenant_admin, property_manager, front_desk
 
 ### 🚧 In Progress
 
@@ -396,12 +469,7 @@ _(nothing)_
 ### ❌ Not Started
 
 - [ ] Dashboard
-- [ ] Properties module
-- [ ] Room Types module
-- [ ] Rooms module
 - [ ] Reservations module
-- [ ] Guests module
-- [ ] Staff (Users) module
 - [ ] Housekeeping module
 - [ ] Reports module
 - [ ] Plans endpoint (GET /plans) — needed to replace planId text input with a dropdown in TenantForm

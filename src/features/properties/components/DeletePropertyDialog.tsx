@@ -16,9 +16,10 @@ interface DeletePropertyDialogProps {
   property: Property | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  tenantId?: string;
 }
 
-export function DeletePropertyDialog({ property, open, onOpenChange }: DeletePropertyDialogProps) {
+export function DeletePropertyDialog({ property, open, onOpenChange, tenantId }: DeletePropertyDialogProps) {
   const { mutate, isPending, isSuccess, reset } = useDeleteProperty();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function DeletePropertyDialog({ property, open, onOpenChange }: DeletePro
 
   function handleDelete() {
     if (!property) return;
-    mutate(property.id);
+    mutate({ id: property.id, tenantId });
   }
 
   return (

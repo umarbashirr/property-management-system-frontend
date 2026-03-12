@@ -1,6 +1,6 @@
 import { Navigate } from "react-router";
-import { useIsFetching } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 
 interface SuperAdminRouteProps {
   children: React.ReactNode;
@@ -8,9 +8,9 @@ interface SuperAdminRouteProps {
 
 export function SuperAdminRoute({ children }: SuperAdminRouteProps) {
   const user = useAuthStore((s) => s.user);
-  const isSessionLoading = useIsFetching({ queryKey: ["auth", "me"] }) > 0;
+  const { isPending } = useCurrentUser();
 
-  if (isSessionLoading) {
+  if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />

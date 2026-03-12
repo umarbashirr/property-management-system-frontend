@@ -5,13 +5,14 @@ import type { Property, UpdatePropertyDto } from "@/features/properties/types/pr
 interface UpdatePropertyVariables {
   id: string;
   dto: UpdatePropertyDto;
+  tenantId?: string;
 }
 
 export function useUpdateProperty() {
   const queryClient = useQueryClient();
 
   return useMutation<Property, Error, UpdatePropertyVariables>({
-    mutationFn: ({ id, dto }) => updateProperty(id, dto),
+    mutationFn: ({ id, dto, tenantId }) => updateProperty(id, dto, tenantId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["properties", "list"] });
       queryClient.invalidateQueries({ queryKey: ["properties", "detail", id] });

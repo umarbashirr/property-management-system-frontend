@@ -65,7 +65,11 @@ export function TenantTable({ tenants, isLoading, onDeleteClick }: TenantTablePr
             </TableRow>
           ) : (
             tenants.map((tenant) => (
-              <TableRow key={tenant.id}>
+              <TableRow
+                key={tenant.id}
+                className="cursor-pointer"
+                onClick={() => navigate(`/super-admin/tenants/${tenant.id}`)}
+              >
                 <TableCell className="font-medium">{tenant.name}</TableCell>
                 <TableCell className="text-muted-foreground font-mono text-sm">
                   {tenant.slug}
@@ -80,7 +84,12 @@ export function TenantTable({ tenants, isLoading, onDeleteClick }: TenantTablePr
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <IconDots size={16} />
                         <span className="sr-only">Actions</span>
                       </Button>

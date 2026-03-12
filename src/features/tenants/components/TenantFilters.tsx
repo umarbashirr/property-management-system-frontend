@@ -56,10 +56,10 @@ export function TenantFilters({ filters, onFiltersChange }: TenantFiltersProps) 
           <SelectValue placeholder="All statuses" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All statuses</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="suspended">Suspended</SelectItem>
-          <SelectItem value="cancelled">Cancelled</SelectItem>
+          <SelectItem value="all" label="All statuses">All statuses</SelectItem>
+          <SelectItem value="active" label="Active">Active</SelectItem>
+          <SelectItem value="suspended" label="Suspended">Suspended</SelectItem>
+          <SelectItem value="cancelled" label="Cancelled">Cancelled</SelectItem>
         </SelectContent>
       </Select>
     </div>

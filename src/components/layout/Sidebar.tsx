@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import {
+  IconBed,
   IconBuilding,
   IconBuildingEstate,
+  IconCategory,
   IconChevronLeft,
   IconChevronRight,
   IconCreditCard,
   IconDashboard,
+  IconUserSearch,
+  IconUsers,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { Separator } from "@/components/ui/separator";
 
 interface NavItem {
   label: string;
@@ -32,6 +37,18 @@ const navItems: NavItem[] = [
     roles: ["super_admin", "tenant_admin"],
   },
   {
+    label: "Guests",
+    href: "/profiles",
+    icon: <IconUserSearch size={20} />,
+    roles: ["super_admin", "tenant_admin", "property_manager", "front_desk"],
+  },
+  {
+    label: "Team",
+    href: "/users",
+    icon: <IconUsers size={20} />,
+    roles: ["super_admin", "tenant_admin"],
+  },
+  {
     label: "Plans",
     href: "/super-admin/plans",
     icon: <IconCreditCard size={20} />,
@@ -45,13 +62,40 @@ const navItems: NavItem[] = [
   },
 ];
 
+function getPropertyNavItems(propertyId: string): NavItem[] {
+  return [
+    {
+      label: "Room Types",
+      href: `/properties/${propertyId}/room-types`,
+      icon: <IconCategory size={20} />,
+      roles: ["super_admin", "tenant_admin", "property_manager"],
+    },
+    {
+      label: "Rooms",
+      href: `/properties/${propertyId}/rooms`,
+      icon: <IconBed size={20} />,
+      roles: ["super_admin", "tenant_admin", "property_manager", "front_desk", "housekeeping"],
+    },
+  ];
+}
+
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const role = useAuthStore((s) => s.user?.role);
+  const location = useLocation();
 
   const visibleItems = navItems.filter(
     (item) => role && item.roles.includes(role)
   );
+
+  // Detect property context from URL: /properties/:propertyId (or /properties/:propertyId/...)
+  // Exclude /properties/new from matching
+  const propertyMatch = location.pathname.match(/^\/properties\/(?!new(?:$|\/))([^/]+)/);
+  const propertyId = propertyMatch?.[1];
+
+  const propertyNavItems = propertyId
+    ? getPropertyNavItems(propertyId).filter((item) => role && item.roles.includes(role))
+    : [];
 
   return (
     <aside
@@ -88,6 +132,39 @@ export function Sidebar() {
             {!collapsed && <span>{item.label}</span>}
           </NavLink>
         ))}
+
+        {/* Property-scoped nav (visible when inside a property) */}
+        {propertyNavItems.length > 0 && (
+          <>
+            <Separator className="my-3" />
+            {!collapsed && (
+              <span className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Property
+              </span>
+            )}
+            <div className="mt-1">
+              {propertyNavItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted",
+                      isActive
+                        ? "bg-muted text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                      collapsed && "justify-center px-0"
+                    )
+                  }
+                  title={collapsed ? item.label : undefined}
+                >
+                  {item.icon}
+                  {!collapsed && <span>{item.label}</span>}
+                </NavLink>
+              ))}
+            </div>
+          </>
+        )}
       </nav>
 
       {/* Collapse toggle */}

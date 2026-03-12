@@ -52,4 +52,5 @@ export interface ListPropertiesQuery {
   limit: number;
   search?: string;
   isActive?: boolean;
+  tenantId?: string;
 }

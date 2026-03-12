@@ -60,9 +60,9 @@ export function PlanFilters({ filters, onFiltersChange }: PlanFiltersProps) {
           <SelectValue placeholder="All plans" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All plans</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value="all" label="All plans">All plans</SelectItem>
+          <SelectItem value="active" label="Active">Active</SelectItem>
+          <SelectItem value="inactive" label="Inactive">Inactive</SelectItem>
         </SelectContent>
       </Select>
     </div>

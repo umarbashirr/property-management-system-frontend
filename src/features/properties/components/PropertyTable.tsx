@@ -91,7 +91,7 @@ export function PropertyTable({ properties, isLoading, onDeleteClick }: Property
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
-                        onClick={() => navigate(`/properties/${property.id}`)}
+                        onClick={() => navigate(`/properties/${property.id}?tenantId=${property.tenantId}`)}
                         className="gap-2"
                       >
                         <IconEdit size={16} />

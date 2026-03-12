@@ -1,24 +1,39 @@
 import { Link } from "react-router";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { IconArrowLeft, IconBuilding } from "@tabler/icons-react";
 import { TenantForm } from "@/features/tenants/components/TenantForm";
 
 export function CreateTenantPage() {
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
-        <Link
-          to="/super-admin/tenants"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <IconArrowLeft size={16} />
-          Back to tenants
-        </Link>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight">New tenant</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Create a new tenant and their initial admin account.
-        </p>
+    <div className="mx-auto max-w-3xl pb-12">
+      {/* Navigation */}
+      <Link
+        to="/super-admin/tenants"
+        className="group mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <IconArrowLeft
+          size={16}
+          className="transition-transform group-hover:-translate-x-0.5"
+        />
+        Back to tenants
+      </Link>
+
+      {/* Page header */}
+      <div className="mb-10 flex items-start gap-4">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <IconBuilding size={24} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Create a new tenant
+          </h1>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            Set up a new tenant and their initial admin account. You can always
+            update these details later.
+          </p>
+        </div>
       </div>
 
+      {/* Form */}
       <TenantForm mode="create" />
     </div>
   );

@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router";
-import { IconArrowLeft, IconUser } from "@tabler/icons-react";
+import { IconArrowLeft, IconBuilding, IconBuildingEstate, IconUser } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -10,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TenantForm } from "@/features/tenants/components/TenantForm";
-import { StatusBadge } from "@/features/tenants/components/StatusBadge";
 import { useTenant } from "@/features/tenants/hooks/useTenant";
 import { useTenantUsers } from "@/features/tenants/hooks/useTenantUsers";
 
@@ -23,6 +23,12 @@ function UserRoleBadge({ role }: { role: string }) {
     </span>
   );
 }
+
+const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive"> = {
+  active: "default",
+  suspended: "secondary",
+  cancelled: "destructive",
+};
 
 export function TenantDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -58,22 +64,47 @@ export function TenantDetailPage() {
   const users = usersData?.data ?? [];
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link
-          to="/super-admin/tenants"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <IconArrowLeft size={16} />
-          Back to tenants
-        </Link>
-        <div className="mt-3 flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight">{tenant.name}</h1>
-          <StatusBadge status={tenant.status} />
+    <div className="mx-auto max-w-3xl pb-12">
+      {/* Navigation */}
+      <Link
+        to="/super-admin/tenants"
+        className="group mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <IconArrowLeft
+          size={16}
+          className="transition-transform group-hover:-translate-x-0.5"
+        />
+        Back to tenants
+      </Link>
+
+      {/* Page header */}
+      <div className="mb-10 flex items-start gap-4">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <IconBuilding size={24} />
         </div>
-        <p className="mt-1 font-mono text-sm text-muted-foreground">{tenant.slug}</p>
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {tenant.name}
+            </h1>
+            <Badge variant={STATUS_VARIANT[tenant.status] ?? "secondary"}>
+              {tenant.status.charAt(0).toUpperCase() + tenant.status.slice(1)}
+            </Badge>
+            <Link
+              to={`/properties?tenantId=${tenant.id}`}
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-sm font-medium shadow-xs transition-all hover:bg-muted hover:text-foreground"
+            >
+              <IconBuildingEstate size={16} />
+              View Properties
+            </Link>
+          </div>
+          <p className="mt-1 font-mono text-sm leading-relaxed text-muted-foreground">
+            {tenant.slug}
+          </p>
+        </div>
       </div>
 
+      {/* Tabs */}
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview &amp; Edit</TabsTrigger>

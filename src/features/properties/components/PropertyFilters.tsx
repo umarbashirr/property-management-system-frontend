@@ -56,9 +56,9 @@ export function PropertyFilters({ filters, onFiltersChange }: PropertyFiltersPro
           <SelectValue placeholder="All statuses" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All statuses</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value="all" label="All statuses">All statuses</SelectItem>
+          <SelectItem value="active" label="Active">Active</SelectItem>
+          <SelectItem value="inactive" label="Inactive">Inactive</SelectItem>
         </SelectContent>
       </Select>
     </div>

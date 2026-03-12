@@ -2,7 +2,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { IconLoader, IconPlus, IconX } from "@tabler/icons-react";
+import { Link } from "react-router";
+import {
+  IconCreditCard,
+  IconGauge,
+  IconCoin,
+  IconFlag,
+  IconInfoCircle,
+  IconLoader,
+  IconPlus,
+  IconX,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useCreatePlan } from "@/features/plans/hooks/useCreatePlan";
 import { useUpdatePlan } from "@/features/plans/hooks/useUpdatePlan";
 import { isApiError } from "@/lib/api";
@@ -56,6 +73,62 @@ const updatePlanSchema = createPlanSchema.partial();
 
 type CreateFormData = z.infer<typeof createPlanSchema>;
 type UpdateFormData = z.infer<typeof updatePlanSchema>;
+
+// ─── Shared field component ─────────────────────────────────────────────────
+
+interface FieldProps {
+  id: string;
+  label: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+function Field({ id, label, hint, error, required, children }: FieldProps) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id}>
+        {label}
+        {required && <span className="text-destructive"> *</span>}
+      </Label>
+      {children}
+      {error ? (
+        <p className="text-sm text-destructive">{error}</p>
+      ) : hint ? (
+        <p className="text-xs text-muted-foreground">{hint}</p>
+      ) : null}
+    </div>
+  );
+}
+
+// ─── Section card wrapper ───────────────────────────────────────────────────
+
+interface SectionProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}
+
+function Section({ icon, title, description, children }: SectionProps) {
+  return (
+    <Card>
+      <CardHeader className="border-b">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+            {icon}
+          </div>
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
+  );
+}
 
 // ─── Feature tag input ──────────────────────────────────────────────────────
 
@@ -181,166 +254,201 @@ function CreatePlanForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
       {serverError && (
-        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {serverError}
-        </p>
+        <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <IconInfoCircle
+            size={16}
+            className="mt-0.5 shrink-0 text-destructive"
+          />
+          <p className="text-sm text-destructive">{serverError}</p>
+        </div>
       )}
 
-      {/* Identity */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Plan identity
-        </h3>
+      {/* ── Plan identity ── */}
+      <Section
+        icon={<IconCreditCard size={18} />}
+        title="Plan identity"
+        description="Internal name, display name, and status."
+      >
+        <div className="space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field
+              id="name"
+              label="Internal name"
+              required
+              hint="Lowercase with underscores (e.g. starter, pro, enterprise)"
+              error={errors.name?.message}
+            >
+              <Input
+                id="name"
+                placeholder="starter"
+                {...register("name")}
+              />
+            </Field>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-name">Internal name</Label>
-            <Input id="plan-name" placeholder="starter" {...register("name")} />
-            <p className="text-xs text-muted-foreground">
-              Lowercase with underscores (e.g. starter, pro, enterprise)
-            </p>
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
-            )}
+            <Field
+              id="displayName"
+              label="Display name"
+              required
+              error={errors.displayName?.message}
+            >
+              <Input
+                id="displayName"
+                placeholder="Starter Plan"
+                {...register("displayName")}
+              />
+            </Field>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-displayName">Display name</Label>
-            <Input id="plan-displayName" placeholder="Starter Plan" {...register("displayName")} />
-            {errors.displayName && (
-              <p className="text-sm text-destructive">{errors.displayName.message}</p>
-            )}
+          <div className="max-w-xs">
+            <Field id="isActive" label="Status">
+              <Select
+                value={currentIsActive ? "true" : "false"}
+                onValueChange={(v) =>
+                  setValue("isActive", (v ?? "false") === "true", {
+                    shouldValidate: true,
+                  })
+                }
+              >
+                <SelectTrigger id="isActive">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true" label="Active">Active</SelectItem>
+                  <SelectItem value="false" label="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
           </div>
         </div>
+      </Section>
 
-        <div className="space-y-1.5 max-w-xs">
-          <Label htmlFor="plan-isActive">Status</Label>
-          <Select
-            value={currentIsActive ? "true" : "false"}
-            onValueChange={(v) => setValue("isActive", (v ?? "false") === "true", { shouldValidate: true })}
+      {/* ── Resource limits ── */}
+      <Section
+        icon={<IconGauge size={18} />}
+        title="Resource limits"
+        description="Maximum resources allowed for tenants on this plan."
+      >
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Field
+            id="maxProperties"
+            label="Max properties"
+            required
+            error={errors.maxProperties?.message}
           >
-            <SelectTrigger id="plan-isActive">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="true">Active</SelectItem>
-              <SelectItem value="false">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </section>
-
-      {/* Limits */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Resource limits
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-maxProperties">Max properties</Label>
             <Input
-              id="plan-maxProperties"
+              id="maxProperties"
               type="number"
               min={1}
               {...register("maxProperties")}
             />
-            {errors.maxProperties && (
-              <p className="text-sm text-destructive">{errors.maxProperties.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-maxRooms">Max rooms / property</Label>
+          <Field
+            id="maxRooms"
+            label="Max rooms / property"
+            required
+            error={errors.maxRoomsPerProperty?.message}
+          >
             <Input
-              id="plan-maxRooms"
+              id="maxRooms"
               type="number"
               min={1}
               {...register("maxRoomsPerProperty")}
             />
-            {errors.maxRoomsPerProperty && (
-              <p className="text-sm text-destructive">{errors.maxRoomsPerProperty.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-maxUsers">Max users</Label>
+          <Field
+            id="maxUsers"
+            label="Max users"
+            required
+            error={errors.maxUsers?.message}
+          >
             <Input
-              id="plan-maxUsers"
+              id="maxUsers"
               type="number"
               min={1}
               {...register("maxUsers")}
             />
-            {errors.maxUsers && (
-              <p className="text-sm text-destructive">{errors.maxUsers.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-maxWorkflows">Max workflows</Label>
+          <Field
+            id="maxWorkflows"
+            label="Max workflows"
+            required
+            error={errors.maxWorkflows?.message}
+          >
             <Input
-              id="plan-maxWorkflows"
+              id="maxWorkflows"
               type="number"
               min={0}
               {...register("maxWorkflows")}
             />
-            {errors.maxWorkflows && (
-              <p className="text-sm text-destructive">{errors.maxWorkflows.message}</p>
-            )}
-          </div>
+          </Field>
         </div>
-      </section>
+      </Section>
 
-      {/* Pricing */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Pricing (in cents)
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2 max-w-md">
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-priceMonthly">Monthly price</Label>
+      {/* ── Pricing ── */}
+      <Section
+        icon={<IconCoin size={18} />}
+        title="Pricing"
+        description="Monthly and yearly pricing in cents (0 = free tier)."
+      >
+        <div className="grid gap-5 sm:grid-cols-2 max-w-md">
+          <Field
+            id="priceMonthly"
+            label="Monthly price"
+            required
+            hint="0 = free tier"
+            error={errors.priceMonthly?.message}
+          >
             <Input
-              id="plan-priceMonthly"
+              id="priceMonthly"
               type="number"
               min={0}
               {...register("priceMonthly")}
             />
-            <p className="text-xs text-muted-foreground">0 = free tier</p>
-            {errors.priceMonthly && (
-              <p className="text-sm text-destructive">{errors.priceMonthly.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="plan-priceYearly">Yearly price</Label>
+          <Field
+            id="priceYearly"
+            label="Yearly price"
+            required
+            error={errors.priceYearly?.message}
+          >
             <Input
-              id="plan-priceYearly"
+              id="priceYearly"
               type="number"
               min={0}
               {...register("priceYearly")}
             />
-            {errors.priceYearly && (
-              <p className="text-sm text-destructive">{errors.priceYearly.message}</p>
-            )}
-          </div>
+          </Field>
         </div>
-      </section>
+      </Section>
 
-      {/* Features */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Feature flags
-        </h3>
+      {/* ── Feature flags ── */}
+      <Section
+        icon={<IconFlag size={18} />}
+        title="Feature flags"
+        description="Features available to tenants on this plan."
+      >
         <FeatureTagInput value={features} onChange={setFeatures} />
-      </section>
+      </Section>
 
-      <Button type="submit" disabled={isPending}>
-        {isPending && <IconLoader size={16} className="mr-2 animate-spin" />}
-        {isPending ? "Creating…" : "Create plan"}
-      </Button>
+      {/* ── Actions ── */}
+      <div className="flex items-center justify-end gap-3 pt-2">
+        <Link
+          to="/super-admin/plans"
+          className="inline-flex h-9 items-center justify-center rounded-md border border-border bg-background px-2.5 text-sm font-medium shadow-xs transition-all hover:bg-muted hover:text-foreground"
+        >
+          Cancel
+        </Link>
+        <Button type="submit" disabled={isPending}>
+          {isPending && <IconLoader size={16} className="mr-2 animate-spin" />}
+          {isPending ? "Creating…" : "Create plan"}
+        </Button>
+      </div>
     </form>
   );
 }
@@ -387,162 +495,198 @@ function EditPlanForm({ plan }: EditPlanFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
       {serverError && (
-        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {serverError}
-        </p>
+        <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <IconInfoCircle
+            size={16}
+            className="mt-0.5 shrink-0 text-destructive"
+          />
+          <p className="text-sm text-destructive">{serverError}</p>
+        </div>
       )}
 
-      {/* Identity */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Plan identity
-        </h3>
+      {/* ── Plan identity ── */}
+      <Section
+        icon={<IconCreditCard size={18} />}
+        title="Plan identity"
+        description="Internal name, display name, and status."
+      >
+        <div className="space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field
+              id="edit-name"
+              label="Internal name"
+              required
+              hint="Lowercase with underscores (e.g. starter, pro, enterprise)"
+              error={errors.name?.message}
+            >
+              <Input
+                id="edit-name"
+                {...register("name")}
+              />
+            </Field>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-name">Internal name</Label>
-            <Input id="edit-name" {...register("name")} />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
-            )}
+            <Field
+              id="edit-displayName"
+              label="Display name"
+              required
+              error={errors.displayName?.message}
+            >
+              <Input
+                id="edit-displayName"
+                {...register("displayName")}
+              />
+            </Field>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-displayName">Display name</Label>
-            <Input id="edit-displayName" {...register("displayName")} />
-            {errors.displayName && (
-              <p className="text-sm text-destructive">{errors.displayName.message}</p>
-            )}
+          <div className="max-w-xs">
+            <Field id="edit-isActive" label="Status">
+              <Select
+                value={currentIsActive ? "true" : "false"}
+                onValueChange={(v) =>
+                  setValue("isActive", (v ?? "false") === "true", {
+                    shouldValidate: true,
+                  })
+                }
+              >
+                <SelectTrigger id="edit-isActive">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true" label="Active">Active</SelectItem>
+                  <SelectItem value="false" label="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
           </div>
         </div>
+      </Section>
 
-        <div className="space-y-1.5 max-w-xs">
-          <Label htmlFor="edit-isActive">Status</Label>
-          <Select
-            value={currentIsActive ? "true" : "false"}
-            onValueChange={(v) => setValue("isActive", (v ?? "false") === "true", { shouldValidate: true })}
+      {/* ── Resource limits ── */}
+      <Section
+        icon={<IconGauge size={18} />}
+        title="Resource limits"
+        description="Maximum resources allowed for tenants on this plan."
+      >
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Field
+            id="edit-maxProperties"
+            label="Max properties"
+            required
+            error={errors.maxProperties?.message}
           >
-            <SelectTrigger id="edit-isActive">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="true">Active</SelectItem>
-              <SelectItem value="false">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </section>
-
-      {/* Limits */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Resource limits
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-maxProperties">Max properties</Label>
             <Input
               id="edit-maxProperties"
               type="number"
               min={1}
               {...register("maxProperties")}
             />
-            {errors.maxProperties && (
-              <p className="text-sm text-destructive">{errors.maxProperties.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-maxRooms">Max rooms / property</Label>
+          <Field
+            id="edit-maxRooms"
+            label="Max rooms / property"
+            required
+            error={errors.maxRoomsPerProperty?.message}
+          >
             <Input
               id="edit-maxRooms"
               type="number"
               min={1}
               {...register("maxRoomsPerProperty")}
             />
-            {errors.maxRoomsPerProperty && (
-              <p className="text-sm text-destructive">{errors.maxRoomsPerProperty.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-maxUsers">Max users</Label>
+          <Field
+            id="edit-maxUsers"
+            label="Max users"
+            required
+            error={errors.maxUsers?.message}
+          >
             <Input
               id="edit-maxUsers"
               type="number"
               min={1}
               {...register("maxUsers")}
             />
-            {errors.maxUsers && (
-              <p className="text-sm text-destructive">{errors.maxUsers.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-maxWorkflows">Max workflows</Label>
+          <Field
+            id="edit-maxWorkflows"
+            label="Max workflows"
+            required
+            error={errors.maxWorkflows?.message}
+          >
             <Input
               id="edit-maxWorkflows"
               type="number"
               min={0}
               {...register("maxWorkflows")}
             />
-            {errors.maxWorkflows && (
-              <p className="text-sm text-destructive">{errors.maxWorkflows.message}</p>
-            )}
-          </div>
+          </Field>
         </div>
-      </section>
+      </Section>
 
-      {/* Pricing */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Pricing (in cents)
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2 max-w-md">
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-priceMonthly">Monthly price</Label>
+      {/* ── Pricing ── */}
+      <Section
+        icon={<IconCoin size={18} />}
+        title="Pricing"
+        description="Monthly and yearly pricing in cents (0 = free tier)."
+      >
+        <div className="grid gap-5 sm:grid-cols-2 max-w-md">
+          <Field
+            id="edit-priceMonthly"
+            label="Monthly price"
+            required
+            error={errors.priceMonthly?.message}
+          >
             <Input
               id="edit-priceMonthly"
               type="number"
               min={0}
               {...register("priceMonthly")}
             />
-            {errors.priceMonthly && (
-              <p className="text-sm text-destructive">{errors.priceMonthly.message}</p>
-            )}
-          </div>
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-priceYearly">Yearly price</Label>
+          <Field
+            id="edit-priceYearly"
+            label="Yearly price"
+            required
+            error={errors.priceYearly?.message}
+          >
             <Input
               id="edit-priceYearly"
               type="number"
               min={0}
               {...register("priceYearly")}
             />
-            {errors.priceYearly && (
-              <p className="text-sm text-destructive">{errors.priceYearly.message}</p>
-            )}
-          </div>
+          </Field>
         </div>
-      </section>
+      </Section>
 
-      {/* Features */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-          Feature flags
-        </h3>
+      {/* ── Feature flags ── */}
+      <Section
+        icon={<IconFlag size={18} />}
+        title="Feature flags"
+        description="Features available to tenants on this plan."
+      >
         <FeatureTagInput value={features} onChange={setFeatures} />
-      </section>
+      </Section>
 
-      <Button type="submit" disabled={isPending}>
-        {isPending && <IconLoader size={16} className="mr-2 animate-spin" />}
-        {isPending ? "Saving…" : "Save changes"}
-      </Button>
+      {/* ── Actions ── */}
+      <div className="flex items-center justify-end gap-3 pt-2">
+        <Link
+          to="/super-admin/plans"
+          className="inline-flex h-9 items-center justify-center rounded-md border border-border bg-background px-2.5 text-sm font-medium shadow-xs transition-all hover:bg-muted hover:text-foreground"
+        >
+          Cancel
+        </Link>
+        <Button type="submit" disabled={isPending}>
+          {isPending && <IconLoader size={16} className="mr-2 animate-spin" />}
+          {isPending ? "Saving…" : "Save changes"}
+        </Button>
+      </div>
     </form>
   );
 }
